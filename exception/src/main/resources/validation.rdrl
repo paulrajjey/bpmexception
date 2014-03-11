@@ -1,0 +1,17 @@
+import com.poc.jbpm.PaymentInfo;
+import com.poc.jbpm.PlanInfo;
+import com.poc.jbpm.CustomerInfo;
+import com.poc.jbpm.Validation;
+
+rule "validation"
+	dialect "mvel"
+	ruleflow-group "validation"
+	when
+		payment : PaymentInfo( cardType != "VISA" )
+		validation : Validation( error == null )
+	then
+		validation.setError( "Invalide credit card Type, Accept only VISA" );
+		validation.setType( "Credit Card" );
+		retract( validation );
+		retract( payment );
+end
